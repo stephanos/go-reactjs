@@ -6,7 +6,7 @@ This experiment is based on [otto](https://github.com/robertkrimen/otto), a Java
 To run:
 ```bash
 go build ./...
-./go-reactjs-benchmark
+./go-reactjs
 ```
 
 To benchmark:

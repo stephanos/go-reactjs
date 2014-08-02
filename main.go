@@ -1,53 +1,23 @@
 package main
 
-import (
-	"fmt"
-	"strconv"
-
-	"github.com/robertkrimen/otto"
-)
+import "fmt"
 
 func main() {
-	v := runDemo1()
+	v := newRenderer([]string{"assets/demo1.js"}).
+		runCmd("React.renderComponentToString(CommentBox({}))")
 	fmt.Printf("\n%v\n", v)
 
-	v = runDemo2()
+	v = newRenderer([]string{"assets/demo2.js"}).
+		runCmd("React.renderComponentToString(HelloWorld({}))")
 	fmt.Printf("\n%v\n", v)
 
-	v = runDemo3(100)
+	v = newRenderer([]string{"assets/demo3.js"}).
+		runCmd(`
+			var data = [
+				{"id": 0, "author": "Anonymous", "text": "This is a comment"},
+				{"id": 1, "author": "Anonymous", "text": "This is another comment"},
+			]
+			React.renderComponentToString(CommentBox({data : data}));
+		`)
 	fmt.Printf("\n%v\n", v)
-}
-
-func runDemo1() otto.Value {
-	return runDemo(nil, []string{"assets/demo1.js"}, "React.renderComponentToString(CommentBox({}))")
-}
-
-func runDemo2() otto.Value {
-	return runDemo(nil, []string{"assets/demo2.js"}, "React.renderComponentToString(HelloWorld({}));")
-}
-
-func runDemo3(rows int) otto.Value {
-	return runDemo(nil, []string{"assets/demo3.js"}, `
-		var data = [];
-		for (i = 0; i < `+strconv.Itoa(rows)+`; i++) {
-			data.push({"id": i, "author": "Anonymous", "text": "This is comment #" + i});
-		}
-		React.renderComponentToString(CommentBox({data : data}));
-	`)
-}
-
-func runDemo(r *renderer, files []string, cmd string) otto.Value {
-	if r == nil {
-		r = newRenderer()
-	}
-
-	for _, file := range files {
-		r.runFile(file)
-	}
-
-	v, err := r.Run(cmd)
-	if err != nil {
-		panic(err)
-	}
-	return v
 }

@@ -1,10 +1,20 @@
 package main
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func benchmarkRender(i int, b *testing.B) {
+	r := newRenderer([]string{"assets/demo3.js"})
 	for n := 0; n < b.N; n++ {
-		runDemo3(i)
+		r.runCmd(`
+			var data = [];
+			for (i = 0; i < ` + strconv.Itoa(i) + `; i++) {
+				data.push({"id": i, "author": "Anonymous", "text": "This is comment #" + i});
+			}
+			React.renderComponentToString(CommentBox({data : data}));
+		`)
 	}
 }
 

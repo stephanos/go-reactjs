@@ -6,10 +6,15 @@ var React = self.React;
 
 var CommentBox = React.createClass({displayName: 'CommentBox',
   render: function () {
+    var commentList = React.createElement(CommentList, 
+      this.props
+    );
     return (
-      React.DOM.div({className: "commentBox"},
+      React.createElement(
+        "div",
+        {},
         React.DOM.h1(null, "Comments"),
-        CommentList(this.props)
+        commentList
       )
     );
   }
@@ -18,7 +23,11 @@ var CommentBox = React.createClass({displayName: 'CommentBox',
 var CommentList = React.createClass({displayName: 'CommentList',
   render: function () {
     var commentNodes = this.props.data.map(function (comment) {
-      return Comment({key: comment.id, author: comment.author}, comment.text);
+      return React.createElement(
+        Comment, 
+        {key: comment.id, author: comment.author},
+        comment.text
+      );
     });
     return (
       React.DOM.div({className: "commentList"},
